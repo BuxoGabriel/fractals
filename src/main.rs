@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use minifb::*;
 
 use fractals::mandelbrot::MandelbrotSet;
@@ -25,15 +27,16 @@ fn main() {
         (-0.14705, -0.859),
         (0.28011, 0.00803),
     ];
+    let mut time = SystemTime::now();
     let mut zoom: f64 = 1.0;
     let mut index = 0;
     let (mut off_x, mut off_y) = pois[index];
     while window.is_open() {
         // Display Fractals
         show_fractal(&mut window, &mut pixels, &fractal, zoom, off_x, off_y);
-        zoom *= 1.03;
+        zoom = 1.0005_f64.powf(time.elapsed().unwrap().as_millis() as f64);
         if zoom > 100000.0 {
-            zoom = 1.2;
+            time = SystemTime::now();
             index = (index + 1) % pois.len();
             (off_x, off_y) = pois[index];
         }
